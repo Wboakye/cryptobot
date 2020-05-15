@@ -2,7 +2,8 @@ class Assets:
     def __init__(self, liquid_assets, invested_assets):
         self._liquid_assets = liquid_assets
         self._invested_assets = invested_assets
-        self._asset_value = None
+        self._asset_value_change = None
+        self.total_asset_value = None
 
     def change_liquid_assets(self, amount, new_value = False):
         if new_value:
@@ -12,7 +13,8 @@ class Assets:
 
     def invest_assets(self, amount = None):
         if not amount:
-            self._invested_assets += self._liquid_assets
+            self._invested_assets = self._liquid_assets
+            self._liquid_assets = 0
         else:
             if self._liquid_assets < amount:
                 print('Insufficient funds.')
@@ -26,19 +28,29 @@ class Assets:
         return self._invested_assets
 
     def calculate_asset_value(self, percent_change):
-        self._asset_value = self._invested_assets / 100 * percent_change
-        print("Asset Value: " + str(self._asset_value))
+        self._asset_value_change = self._invested_assets / 100 * percent_change
+        self.total_asset_value = self._invested_assets + self._asset_value_change
+        print(f'Invest Asset Value: {self.total_asset_value}')
+        print("Change: " + str(self._asset_value_change))
 
     def sell_assets(self):
-        increase_amount = self.get_increase_amount()
-        self._liquid_assets = self._asset_value
-        self._asset_value = 0
+        sold_message = """
+        --------------------------------
+        |                              |
+        |                              |
+        |         ASSETS SOLD          |
+        |                              |
+        |                              |
+        |______________________________|
+        """
+        increase_amount = self._asset_value_change()
+        self._liquid_assets = self.total_asset_value
+        self.total_asset_value = 0
         self._invested_assets = 0
+        print(sold_message)
         print(str(self._liquid_assets) + " in assets sold")
         print(f'Value added: {str(increase_amount)}')
 
-    def get_increase_amount(self):
-        return self._asset_value - self._invested_assets
 
 
 # FIND LOSS TOLERANCE PRICE

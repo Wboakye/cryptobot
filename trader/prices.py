@@ -11,7 +11,7 @@ class Prices:
         self.current_price = initial_price
         self.high_price = initial_price
         self.low_price = initial_price
-        print("Initial investment is at price" + str(self.initial_price))
+        print(f'Initial investment is at price {str(self.initial_price)}')
 
     def update_prices(self, current_price):
         if self.initial_price is None:
@@ -30,5 +30,6 @@ class Prices:
     def calculate_change(self):
         change = self.current_price - self.initial_price
         self.percent_change = change / self.initial_price * 100
+        #print(f'PERCENT CHANGE RAW: {self.percent_change}')
 
 

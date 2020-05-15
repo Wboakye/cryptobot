@@ -15,6 +15,7 @@ class Trader:
         self.gain_threshold_met = False
         self.assets_are_liquid = True
         self.is_trading = True
+        self.first_trade = True
 
 
     def start(self):
@@ -28,8 +29,11 @@ class Trader:
 
             self.price.update_prices(current_price)
 
+            if self.first_trade:
+                self.assets.invest_assets()
+                self.first_trade = False
+
             self.assets.calculate_asset_value(self.price.percent_change)
-            print(str(self.assets.get_increase_amount()) + " in total value added")
 
             if self.loss_tolerance_price is None:
                 self.calculate_loss_tolerance_price()
@@ -42,8 +46,6 @@ class Trader:
             else:
                 self.threshold_not_met_strategy()
 
-
-
     def calculate_loss_tolerance_price(self):
         decimal = self.loss_tolerance / 100
         loss_amount = decimal * self.price.initial_price
@@ -52,13 +54,12 @@ class Trader:
     def threshold_met_strategy(self):
         sell_price = self.price.high_price - self.price.initial_price / 2
         if sell_price > self.price.current_price:
-            #sell, record
-            pass
+            self.assets.sell_assets()
 
     def threshold_not_met_strategy(self):
         if self.loss_tolerance_price > self.price.current_price:
             #sell, record
-            pass
+            self.assets.sell_assets()
 
     def reset(self):
         self.initial_investment = None
